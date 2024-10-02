@@ -11,6 +11,26 @@ contract TradeBase is Ownable, ReentrancyGuard {
     NFTFrame public nftContract;
     AhoraCoin public tokenContract;
 
+    struct TradeInfo {
+        address from;
+        address to;
+        uint256 amount;
+        uint256 timestamp;
+    }
+
+    mapping(uint256 => TradeInfo) public trades;
+    uint256 public tradeId;
+
+    mapping(address => uint256[]) private userTrades;
+
+    event TradeRecorded(uint256 indexed tradeId, address from, address to, uint256 amount, uint256 timestamp);
+
+    function recordTrade(address to, uint256 amount) public {
+        tradeId++;
+        trades[tradeId] = TradeInfo(msg.sender, to, amount, block.timestamp);
+        emit TradeRecorded(tradeId, msg.sender, to, amount, block.timestamp);
+    }
+
     // 사용자별 잔액을 추적하는 매핑
     mapping(address => uint256) private userBalances;
 

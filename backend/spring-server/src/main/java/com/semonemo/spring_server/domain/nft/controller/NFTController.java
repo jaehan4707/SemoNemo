@@ -51,13 +51,15 @@ public class NFTController implements NFTApi {
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody NFTRequestDto NFTRequestDto) {
         try {
+            log.info(1);
             TransactionReceipt transactionResult = blockChainService.waitForTransactionReceipt(NFTRequestDto.getTxHash());
-
+            log.info(2);
             BigInteger tokenId = null;
             String creator;
             String tokenURI;
 
             for (org.web3j.protocol.core.methods.response.Log txLog : transactionResult.getLogs()) {
+                log.info(3);
                 String eventHash = EventEncoder.encode(NFTEvent.NFT_MINTED_EVENT);
 
                 if (txLog.getTopics().get(0).equals(eventHash)) {
